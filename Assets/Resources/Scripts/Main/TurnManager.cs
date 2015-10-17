@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
+using UniRx.Triggers;
 
 public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 	public int totalTurn = 10;
+	public IObservable<int> TurnNumberObservable;
 	private int turn;
 	private ArrayList turnTeams;
 
@@ -43,5 +46,12 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 
 	public bool IsFinishTurn() {
 		return turn >= totalTurn;
+	}
+
+	public IObservable<int> GetRestTurnObservable() {
+		return Observable
+				.EveryUpdate ()
+				.Select (_ => this.GetRestTurn())
+				.DistinctUntilChanged ();
 	}
 }
