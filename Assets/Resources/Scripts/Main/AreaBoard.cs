@@ -1,15 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
-	private Hashtable areaTable; // Vector2, Team
-	private Hashtable seatStack; // Int, Seat
+	private Dictionary<Vector2, Team> areaTable; // Vector2, Team
+	private Dictionary<int, Seat> seatStack; // Int, Seat
 	private int seatOrder;
+	public int areaDivision = 200;
+	public GameObject areaObject;
 
 	public void Start() {
-		areaTable = new Hashtable ();
-		seatStack = new Hashtable ();
+		areaTable = new Dictionary<Vector2, Team> ();
+		seatStack = new Dictionary<int, Seat> ();
 		seatOrder = 0;
+
+		float areaRadius = this.CalculateAreaRadius (areaObject);
+		float areaStep = this.CalculateAreaStep (areaObject, areaDivision);
+		Debug.Log ("areaRadius: " + areaRadius);
+		Debug.Log ("areaStep: " + areaStep);
+		InitializeArea (areaObject.transform.position, areaRadius, areaStep);
+		InitializeSeatStack ();
 	}
 
 	// TODO: change flexibility for 
@@ -20,11 +30,11 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		float ex = centerPoint.x + radius;
 		float ey = centerPoint.y + radius;
 
-		for (float y = sy; y < ey; y += step) {
-			for (float x = sx; x < ex; x += step) {
+		for (float y = sy; y <= ey; y += step) {
+			for (float x = sx; x <= ex; x += step) {
 				Vector2 point = new Vector2 (x, y);
 				if (Vector2.Distance (centerPoint, point) <= radius) {
-					areaTable.Add (point, Team.Empty);
+					areaTable[point] = Team.Empty;
 				}
 			}
 		}
@@ -36,10 +46,15 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 	}
 	
 	public void UpdateArea(Vector2 centerPoint, float radius, Team team) {
+		List<Vector2> updatePoints = new List<Vector2>();
 		foreach (Vector2 point in areaTable.Keys) {
 			if (Vector2.Distance(centerPoint, point) <= radius) {
-				areaTable.Add (point, team);
+				updatePoints.Add (point);
 			}
+		}
+
+		foreach (Vector2 point in updatePoints) {
+			areaTable[point] = team;
 		}
 	}
 
@@ -60,7 +75,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		int totalCount = 0;
 		int targetTeamCount = 0;
 
-		foreach (DictionaryEntry entry in areaTable) {
+		foreach (KeyValuePair<Vector2, Team> entry in areaTable) {
 			Team team = (Team)entry.Value;
 			if (targetTeam == team) {
 				Vector2 point = (Vector2)entry.Key;
@@ -74,5 +89,15 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		}
 
 		return (float)targetTeamCount / totalCount;
+	}
+
+	private float CalculateAreaRadius(GameObject gameObject) {
+		SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
+		return renderer.bounds.size.x / 2.0f;
+	}
+
+	private float CalculateAreaStep(GameObject gameObject, int areaDivision) {
+		SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
+		return renderer.bounds.size.x / areaDivision;
 	}
 }

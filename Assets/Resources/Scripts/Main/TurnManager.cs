@@ -25,19 +25,23 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 	}
 
 	public bool NextTurn() {
-		Team team = GetTurnTeam();
-		Seat seat = new Seat (turn, team);
-		// FIXME: Seat processing
-		AreaBoard.Instance.AddSeat (seat, team);
 		turn++;
-		return turn >= totalTurn;
+		return IsFinishTurn ();
 	}
 
 	public int GetRestTurn() {
 		return totalTurn - turn;
 	}
 
-	public Team GetTurnTeam () {
+	public Team GetTurnTeam() {
 		return (Team)turnTeams[turn];
+	}
+
+	public int GetCurrentTurn() {
+		return turn;
+	}
+
+	public bool IsFinishTurn() {
+		return turn >= totalTurn;
 	}
 }
