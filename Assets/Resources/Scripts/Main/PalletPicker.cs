@@ -38,8 +38,6 @@ public class PalletPicker : MonoBehaviour {
 
 				Image image = buttons[i].transform.GetChild (0).GetComponent<Image>();
 				image.sprite = Resources.Load<Sprite>(path);
-
-				Debug.Log ("pickup: " + partner);
 			}
 		}
 	}
