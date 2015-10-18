@@ -53,12 +53,9 @@ public class PalletPicker : MonoBehaviour {
 				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
 				.Select (p => new Vector3(p.x, p.y, stageObject.transform.position.z - 1)) // TODO: summerize
 				.Subscribe(position => {
-					Vector2? nearPosition = AreaBoard.Instance.GetNearPlace(position, team);
-					Debug.Log ("up");
+					Partner partner = (Partner)PickerManager.Instance.selectedPartner;
+					if (PickerManager.Instance.PutdownPartner (new Vector2(position.x, position.y))) {
 
-					if (position != null) {
-						Partner partner = (Partner)PickerManager.Instance.selectedPartner;
-						PickerManager.Instance.PutdownPartner (new Vector2(position.x, position.y));
 					}
 					else {
 						// place back original position.

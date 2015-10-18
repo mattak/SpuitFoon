@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Seat {
-	private int order;
 	private Team team = Team.Player1;
 	private ArrayList circleList = new ArrayList();
 
-	public Seat(int order, Team team) {
-		this.order = order;
+	public Seat(Team team) {
 		this.team = team;
 	}
 
@@ -15,7 +14,7 @@ public class Seat {
 		circleList.Add (circle);
 	}
 
-	public IList GetCircleList() {
+	public ArrayList GetCircleList() {
 		return circleList;
 	}
 }

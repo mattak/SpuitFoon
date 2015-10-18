@@ -67,7 +67,7 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 
 	public void StartCleanupPhase() {
 		PickerManager.Instance.ChangePlayer (Team.Empty);
-		// FIXME: Update Scores.
+		this.NextTurn ();
 	}
 
 	public int GetRestTurn() {

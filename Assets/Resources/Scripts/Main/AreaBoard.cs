@@ -36,6 +36,12 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 				}
 			}
 		}
+
+		// put first area
+		Painter painter1 = new FudoPainter(new Vector2(sx, centerPoint.y), 1.0f);
+		Painter painter2 = new FudoPainter(new Vector2(ex, centerPoint.y), 1.0f);
+		ForcePutPartner(painter1, Team.Player1);
+		ForcePutPartner(painter2, Team.Player2);
 	}
 
 	public void InitializeSeatStack() {
@@ -60,7 +66,10 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		seatOrder++;
 		seatStack.Add (seatOrder, seat);
 
+		Debug.Log ("AddSeat: " + team + ", circleList:" + seat.GetCircleList().Count);
+
 		foreach (Circle circle in seat.GetCircleList()) {
+			Debug.Log ("circle: " + circle);
 			UpdateArea(circle.point, circle.radius, team);
 		}
 	}
@@ -106,24 +115,29 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		Vector2? nearPosition = GetNearPlace (position, team);
 		
 		if (nearPosition == null) {
+			Debug.Log ("Not Found Near partner.");
 			return false;
 		}
 
-		// area board update
-		Painter painter = new FudoPainter(new Vector2(position.x, position.y), 1.0f);
-		int turn = TurnManager.Instance.GetCurrentTurn();
-		Seat seat = new Seat(turn, team);
-		painter.Paint (seat);
-		AreaBoard.Instance.AddSeat (seat, team);
-		
-		// draw update
-		string path = team.PrefabPath();
-		GameObject stamp = Instantiate(Resources.Load (path), position, Quaternion.identity) as GameObject;
+		Painter painter = new FudoPainter(new Vector2(position.x, position.y), 0.5f);
+		ForcePutPartner (painter, team);
 		
 		// goto next turn
 		TurnManager.Instance.NextTurnStep();
-		
+
 		return true;
+	}
+
+	private void ForcePutPartner(Painter painter, Team team) {
+		// area board update
+		Seat seat = new Seat(team);
+		painter.Paint (seat);
+		this.AddSeat (seat, team);
+		
+		// draw update
+		string path = team.PrefabPath();
+		Vector3 position = new Vector3(painter.position.x, painter.position.y, areaObject.transform.position.z + 10);
+		GameObject stamp = Instantiate(Resources.Load (path), position, Quaternion.identity) as GameObject;
 	}
 
 	private float CalculateAreaRadius(GameObject gameObject) {

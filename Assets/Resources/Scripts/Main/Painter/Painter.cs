@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface Painter {
-	void Paint(Seat seat);
+public abstract class Painter {
+	public Vector2 position;
+
+	public Painter(Vector2 position) {
+		this.position = position;
+	}
+
+	abstract public void Paint (Seat seat);
 }
