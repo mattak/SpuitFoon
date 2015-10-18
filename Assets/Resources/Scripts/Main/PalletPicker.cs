@@ -30,6 +30,7 @@ public class PalletPicker : MonoBehaviour {
 
 	public void UpdatePicker() {
 		System.Random random = new System.Random ();
+
 		for (int i = 0; i < buttons.Length; i++) {
 			if (placement[i] == null) {
 				Partner partner = PartnerExt.Random ();
