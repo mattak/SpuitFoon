@@ -91,7 +91,8 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		return (float)targetTeamCount / totalCount;
 	}
 
-	public Vector2 GetNearPlace(Vector2 position, Team team) {
+	public Vector2? GetNearPlace(Vector2 position, Team team) {
+		// TODO: const
 		float distanceThreshold = this.CalculateAreaStep (areaObject, areaDivision);
 
 		foreach (KeyValuePair<Vector2, Team> entry in areaTable) {
