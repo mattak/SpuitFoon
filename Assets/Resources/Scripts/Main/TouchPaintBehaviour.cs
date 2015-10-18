@@ -8,6 +8,7 @@ public class TouchPaintBehaviour : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		/*
 		var updateObservable = Observable.EveryUpdate ();
 		var mouseDown = updateObservable.Where (_ => Input.GetMouseButtonDown (0));
 		var mouseMove = updateObservable.Where (_ => !Input.GetMouseButtonDown (0) && !Input.GetMouseButtonUp (0) && Input.GetMouseButton (0));
@@ -32,6 +33,7 @@ public class TouchPaintBehaviour : MonoBehaviour {
 				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
 				.Subscribe (_ => {
 				});
+		*/
 
 		/*
 		mouseDown.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))

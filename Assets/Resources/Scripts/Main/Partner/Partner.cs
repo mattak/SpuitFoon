@@ -27,6 +27,20 @@ static class PartnerExt {
 		return null;
 	}
 
+	public static GameObject LoadPartner(this Partner partner, Team team) {
+		string path = partner.SpritePath (team);
+
+		if (path == null) {
+			return null;
+		}
+
+		GameObject prefab = (GameObject)Resources.Load ("Prefabs/Partner");
+		Sprite sprite = Resources.Load<Sprite> (path);
+		prefab.GetComponent<SpriteRenderer>().sprite = sprite;
+		
+		return prefab;
+	}
+
 	public static Partner Random() {
 		System.Random random = new System.Random ();
 		int index = random.Next (3); // TODO: fix hard cording.

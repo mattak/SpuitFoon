@@ -7,23 +7,63 @@ using UniRx.Triggers;
 
 public class PalletPicker : MonoBehaviour {
 	public Team team = Team.Player1;
-	public Button[] buttons;
-	private string[] placement;
+	// public Button[] buttons;
+	public Collider2D[] placeHolders;
+	public GameObject stageObject;
+	private Partner?[] placement;
 
 	// Use this for initialization
 	void Start () {
-		placement = new string[buttons.Length];
+		placement = new Partner?[placeHolders.Length];
 
-		for (int i = 0; i < buttons.Length; i++) {
+		for (int i = 0; i < placeHolders.Length; i++) {
 			int index = i;
 			placement[index] = null;
 
-			// button behaves
-			buttons[index].OnClickAsObservable().Subscribe(_ => {
-				placement[index] = null;
-				UpdatePicker();
-			});
+			// mouseDown FIXME: change condition to sprite collision
+			Observable.EveryUpdate ()
+				.Where (_ => Input.GetMouseButtonDown (0))
+				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
+				.Select (point => Physics2D.OverlapPoint (point))
+				.Where (collider => collider == placeHolders[index])
+				.Where (_ => PickerManager.Instance.CanPickupPartner())
+				.Where (_ => placement[index] != null)
+				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
+				.Select (p => new Vector3(p.x, p.y, stageObject.transform.position.z - 1))
+				.Subscribe(position => {
+						Debug.Log ("pickup");
+						Partner partner = (Partner)placement[index];
+						PickerManager.Instance.PickupPartner (partner, team, position);
+				});
 		}
+
+		var mouseMove = Observable.EveryUpdate ()
+				.Where (_ => PickerManager.Instance.CanPutdownPartner())
+				.Where (_ => !Input.GetMouseButtonDown (0) && !Input.GetMouseButtonUp (0) && Input.GetMouseButton (0))
+				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
+				.Select (p => new Vector3(p.x, p.y, stageObject.transform.position.z - 1))
+				.Subscribe (position => {
+					PickerManager.Instance.selectedPartnerObject.transform.position = position;
+				});
+
+		// mouseUp
+		var mouseUp = Observable.EveryUpdate ()
+				.Where (_ => Input.GetMouseButtonUp (0))
+				.Where (_ => PickerManager.Instance.CanPutdownPartner())
+				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
+				.Select (p => new Vector3(p.x, p.y, stageObject.transform.position.z - 1)) // TODO: summerize
+				.Subscribe(position => {
+					Vector2? nearPosition = AreaBoard.Instance.GetNearPlace(position, team);
+					Debug.Log ("up");
+
+					if (position != null) {
+						Partner partner = (Partner)PickerManager.Instance.selectedPartner;
+						PickerManager.Instance.PutdownPartner (new Vector2(position.x, position.y));
+					}
+					else {
+						// place back original position.
+					}
+				});
 
 		UpdatePicker ();
 	}
@@ -31,14 +71,15 @@ public class PalletPicker : MonoBehaviour {
 	public void UpdatePicker() {
 		System.Random random = new System.Random ();
 
-		for (int i = 0; i < buttons.Length; i++) {
+		for (int i = 0; i < placeHolders.Length; i++) {
 			if (placement[i] == null) {
 				Partner partner = PartnerExt.Random ();
-				string path = partner.SpritePath (team);
-				placement[i] = path;
+				string path = partner.SpritePath(team);
+				placement[i] = partner;
 
-				Image image = buttons[i].transform.GetChild (0).GetComponent<Image>();
-				image.sprite = Resources.Load<Sprite>(path);
+				// FIXME
+				// Collider image = placeHolders[i].transform.GetChild (0).GetComponent<Collider>();
+				// image.sprite = Resources.Load<Sprite>(path);
 			}
 		}
 	}

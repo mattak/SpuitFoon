@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PickerManager : SingletonMonoBehaviourFast<PickerManager> {
 	private Team targetTeam;
-	private Partner? selectedPartner;
+	public Partner? selectedPartner;
+	public GameObject selectedPartnerObject;
 
 	public GameObject pickupTable1;
 	public GameObject pickupTable2;
@@ -15,25 +16,39 @@ public class PickerManager : SingletonMonoBehaviourFast<PickerManager> {
 		ChangePlayer (Team.Empty);
 	}
 
-	public void PickupPartner(Partner partner, Team team) {
+	public void PickupPartner(Partner partner, Team team, Vector3 position) {
 		Debug.Assert (team == targetTeam);
 		this.selectedPartner = partner;
+		this.selectedPartnerObject = (GameObject)Instantiate(partner.LoadPartner (team), position, Quaternion.identity);
+		this.selectedPartnerObject.transform.position = position;
 	}
 
-	public void PutdownPartner(Vector2 position) {
+	public bool PutdownPartner(Vector2 position) {
+		Debug.Log ("PutdownPartner");
+
 		if (this.targetTeam == Team.Empty || this.selectedPartner == null) {
-			return;
+			Debug.Log ("empty");
+			return false;
 		}
 
 		Partner partner = (Partner)this.selectedPartner;
 
 		if (AreaBoard.Instance.PutPartner(partner, this.targetTeam, position)) {
 			Debug.Log ("Putted");
+			this.selectedPartner = null;
+			this.selectedPartnerObject = null;
+			return true;
 		}
+
+		return false;
 	}
 
 	public bool CanPutdownPartner() {
 		return (this.targetTeam != Team.Empty && this.selectedPartner != null);
+	}
+
+	public bool CanPickupPartner() {
+		return (this.selectedPartner == null);
 	}
 
 	public void ChangePlayer(Team team) {

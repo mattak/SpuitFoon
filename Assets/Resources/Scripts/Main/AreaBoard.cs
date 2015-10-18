@@ -16,8 +16,6 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 
 		float areaRadius = this.CalculateAreaRadius (areaObject);
 		float areaStep = this.CalculateAreaStep (areaObject, areaDivision);
-		Debug.Log ("areaRadius: " + areaRadius);
-		Debug.Log ("areaStep: " + areaStep);
 		InitializeArea (areaObject.transform.position, areaRadius, areaStep);
 		InitializeSeatStack ();
 	}
