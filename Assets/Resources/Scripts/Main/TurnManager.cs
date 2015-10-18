@@ -7,7 +7,7 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 	public int totalTurn = 10;
 	public IObservable<int> TurnNumberObservable;
 	private int turn;
-	private ArrayList turnTeams;
+	private TurnStep turnStep;
 
 	public void Start() {
 		StartTurn ();
@@ -15,29 +15,63 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 
 	public void StartTurn() {
 		turn = 0;
-		turnTeams = new ArrayList ();
+		turnStep = TurnStep.Setup;
 
-		for (int i = 0; i < totalTurn; i++) {
-			if (i % 2 == 0) {
-				turnTeams.Add (Team.Player1);
-			}
-			else {
-				turnTeams.Add (Team.Player2);
-			}
-		}
+		NextTurn ();
 	}
 
 	public bool NextTurn() {
+		Debug.Log ("NextTurn: " + turn);
+
+		if (IsFinishTurn()) {
+			Debug.Log ("FIXME: show result");
+			return false;
+		}
+
 		turn++;
-		return IsFinishTurn ();
+		turnStep = TurnStep.Cleanup;
+		NextTurnStep ();
+
+		return true;
+	}
+
+	public void NextTurnStep() {
+		Debug.Log ("PreviousTurnStep: " + this.turnStep);
+		this.turnStep = this.turnStep.GetNext ();
+		Debug.Log ("NextTurnStep: " + this.turnStep);
+
+		switch (this.turnStep) {
+		case TurnStep.Setup:
+			StartSetupPhase ();
+			break;
+		case TurnStep.PlayerAction1:
+			StartPlayerPhase (Team.Player1, 0);
+			break;
+		case TurnStep.PlayerAction2:
+			StartPlayerPhase (Team.Player2, 1);
+			break;
+		case TurnStep.Cleanup:
+			StartCleanupPhase ();
+			break;
+		}
+	}
+
+	public void StartSetupPhase () {
+		PickerManager.Instance.ChangePlayer (Team.Empty);
+		this.NextTurnStep ();
+	}
+
+	public void StartPlayerPhase (Team team, int order) {
+		PickerManager.Instance.ChangePlayer (team);
+	}
+
+	public void StartCleanupPhase() {
+		PickerManager.Instance.ChangePlayer (Team.Empty);
+		// FIXME: Update Scores.
 	}
 
 	public int GetRestTurn() {
 		return totalTurn - turn;
-	}
-
-	public Team GetTurnTeam() {
-		return (Team)turnTeams[turn];
 	}
 
 	public int GetCurrentTurn() {

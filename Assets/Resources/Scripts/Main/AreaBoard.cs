@@ -104,6 +104,30 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		return null;
 	}
 
+	public bool PutPartner(Partner partner, Team team, Vector2 position) {
+		Vector2? nearPosition = GetNearPlace (position, team);
+		
+		if (nearPosition == null) {
+			return false;
+		}
+
+		// area board update
+		Painter painter = new FudoPainter(new Vector2(position.x, position.y), 1.0f);
+		int turn = TurnManager.Instance.GetCurrentTurn();
+		Seat seat = new Seat(turn, team);
+		painter.Paint (seat);
+		AreaBoard.Instance.AddSeat (seat, team);
+		
+		// draw update
+		string path = team.PrefabPath();
+		GameObject stamp = Instantiate(Resources.Load (path), position, Quaternion.identity) as GameObject;
+		
+		// goto next turn
+		TurnManager.Instance.NextTurnStep();
+		
+		return true;
+	}
+
 	private float CalculateAreaRadius(GameObject gameObject) {
 		SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
 		return renderer.bounds.size.x / 2.0f;
