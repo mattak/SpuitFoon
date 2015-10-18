@@ -91,6 +91,18 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		return (float)targetTeamCount / totalCount;
 	}
 
+	public Vector2 GetNearPlace(Vector2 position, Team team) {
+		float distanceThreshold = this.CalculateAreaStep (areaObject, areaDivision);
+
+		foreach (KeyValuePair<Vector2, Team> entry in areaTable) {
+			if (team == entry.Value && Vector2.Distance (position, entry.Key) <= distanceThreshold) {
+				return entry.Key;
+			}
+		}
+
+		return null;
+	}
+
 	private float CalculateAreaRadius(GameObject gameObject) {
 		SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
 		return renderer.bounds.size.x / 2.0f;
