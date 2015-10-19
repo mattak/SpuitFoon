@@ -158,7 +158,10 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		// draw update
 		string path = team.PrefabPath();
 		Vector3 position = new Vector3(painter.position.x, painter.position.y, areaObject.transform.position.z + 10);
-		Instantiate(Resources.Load (path), position, Quaternion.identity);
+		GameObject circleObj = Resources.Load<GameObject> (path);
+		Bounds bounds = circleObj.GetComponent<SpriteRenderer>().bounds;
+		Debug.Log ("bounds: " + bounds.size.x);
+		Instantiate(circleObj, position, Quaternion.identity);
 
 		// debug
 		DrawDebugGrids();
