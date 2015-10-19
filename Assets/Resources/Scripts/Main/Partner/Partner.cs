@@ -40,9 +40,10 @@ static class PartnerExt {
 		
 		return prefab;
 	}
+	
+	private static System.Random random = new System.Random ();
 
 	public static Partner Random() {
-		System.Random random = new System.Random ();
 		int index = random.Next (3); // TODO: fix hard cording.
 		return (Partner)System.Enum.ToObject(typeof(Partner), index);
 	}

@@ -25,6 +25,7 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 
 		if (IsFinishTurn()) {
 			Debug.Log ("FIXME: show result");
+			GameManager.Instance.GameOver();
 			return false;
 		}
 

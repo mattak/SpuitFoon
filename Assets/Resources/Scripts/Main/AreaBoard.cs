@@ -109,7 +109,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 			return false;
 		}
 
-		Painter painter = new FudoPainter(new Vector2(position.x, position.y), 0.5f);
+		Painter painter = new FudoPainter(new Vector2(position.x, position.y), 1.0f);
 		ForcePutPartner (painter, team);
 		
 		// goto next turn
@@ -130,7 +130,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 			Vector2 point = pair.Key;
 			Team team = pair.Value;
 
-			if (random.Next (50) % 50 != 0) {
+			if (team == Team.Empty && random.Next (50) % 50 != 0) {
 				continue;
 			}
 
