@@ -40,8 +40,8 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		// put first area
 		Painter painter1 = new FudoPainter(new Vector2(sx, centerPoint.y), 1.0f);
 		Painter painter2 = new FudoPainter(new Vector2(ex, centerPoint.y), 1.0f);
-		ForcePutPartner(painter1, Team.Player1);
-		ForcePutPartner(painter2, Team.Player2);
+		DrawCircle(painter1, Team.Player1);
+		DrawCircle(painter2, Team.Player2);
 	}
 
 	public void InitializeSeatStack() {
@@ -110,7 +110,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		}
 
 		Painter painter = new FudoPainter(new Vector2(position.x, position.y), 1.0f);
-		ForcePutPartner (painter, team);
+		DrawCircle (painter, team);
 		
 		// goto next turn
 		TurnManager.Instance.NextTurnStep();
@@ -149,7 +149,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		}
 	}
 
-	private void ForcePutPartner(Painter painter, Team team) {
+	private void DrawCircle(Painter painter, Team team) {
 		// area board update
 		Seat seat = new Seat(team);
 		painter.Paint (seat);
