@@ -37,7 +37,8 @@ public class PalletPicker : MonoBehaviour {
 				});
 		}
 
-		var mouseMove = Observable.EveryUpdate ()
+		// mouse move
+		Observable.EveryUpdate ()
 				.Where (_ => PickerManager.Instance.CanPutdownPartner())
 				.Where (_ => !Input.GetMouseButtonDown (0) && !Input.GetMouseButtonUp (0) && Input.GetMouseButton (0))
 				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
@@ -47,15 +48,14 @@ public class PalletPicker : MonoBehaviour {
 				});
 
 		// mouseUp
-		var mouseUp = Observable.EveryUpdate ()
+		Observable.EveryUpdate ()
 				.Where (_ => Input.GetMouseButtonUp (0))
 				.Where (_ => PickerManager.Instance.CanPutdownPartner())
 				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
 				.Select (p => new Vector3(p.x, p.y, stageObject.transform.position.z - 1)) // TODO: summerize
 				.Subscribe(position => {
-					Partner partner = (Partner)PickerManager.Instance.selectedPartner;
 					if (PickerManager.Instance.PutdownPartner (new Vector2(position.x, position.y))) {
-
+						// Put down.
 					}
 					else {
 						// place back original position.

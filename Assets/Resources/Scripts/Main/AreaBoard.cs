@@ -7,10 +7,12 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 	private List<Seat> seatStack; // Seat
 	public int areaDivision = 200;
 	public GameObject areaObject;
+	private List<GameObject> debugGrids;
 
 	public void Start() {
 		areaTable = new Dictionary<Vector2, Team> ();
 		seatStack = new List<Seat> ();
+		debugGrids = new List<GameObject>();
 
 		float areaRadius = this.CalculateAreaRadius (areaObject);
 		float areaStep = this.CalculateAreaStep (areaObject, areaDivision);
@@ -74,7 +76,6 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		foreach (KeyValuePair<Vector2, Team> entry in areaTable) {
 			Team team = (Team)entry.Value;
 			if (targetTeam == team) {
-				Vector2 point = entry.Key;
 				targetTeamCount++;
 			}
 			totalCount++;
@@ -117,6 +118,37 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		return true;
 	}
 
+	private void DrawDebugGrids() {
+		foreach (GameObject obj in debugGrids) {
+			Destroy(obj);
+		}
+
+		debugGrids.Clear ();
+		System.Random random = new System.Random();
+
+		foreach (KeyValuePair<Vector2, Team> pair in areaTable) {
+			Vector2 point = pair.Key;
+			Team team = pair.Value;
+
+			if (random.Next (50) % 50 != 0) {
+				continue;
+			}
+
+			GameObject obj = Resources.Load<GameObject> ("Prefabs/Stamp");
+
+			if (team == Team.Player1) {
+				obj.GetComponent<SpriteRenderer>().color = Color.red;
+			} else if (team == Team.Player2) {
+				obj.GetComponent<SpriteRenderer>().color = Color.green;
+			} else {
+				obj.GetComponent<SpriteRenderer>().color = Color.gray;
+			}
+
+			GameObject newObj = (GameObject)Instantiate (obj, new Vector3(point.x, point.y, areaObject.transform.position.z + 9), Quaternion.identity);
+			this.debugGrids.Add (newObj);
+		}
+	}
+
 	private void ForcePutPartner(Painter painter, Team team) {
 		// area board update
 		Seat seat = new Seat(team);
@@ -126,7 +158,10 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		// draw update
 		string path = team.PrefabPath();
 		Vector3 position = new Vector3(painter.position.x, painter.position.y, areaObject.transform.position.z + 10);
-		GameObject stamp = Instantiate(Resources.Load (path), position, Quaternion.identity) as GameObject;
+		Instantiate(Resources.Load (path), position, Quaternion.identity);
+
+		// debug
+		DrawDebugGrids();
 	}
 
 	private float CalculateAreaRadius(GameObject gameObject) {
