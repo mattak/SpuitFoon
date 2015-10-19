@@ -4,15 +4,13 @@ using System.Collections.Generic;
 
 public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 	private Dictionary<Vector2, Team> areaTable; // Vector2, Team
-	private Dictionary<int, Seat> seatStack; // Int, Seat
-	private int seatOrder;
+	private List<Seat> seatStack; // Seat
 	public int areaDivision = 200;
 	public GameObject areaObject;
 
 	public void Start() {
 		areaTable = new Dictionary<Vector2, Team> ();
-		seatStack = new Dictionary<int, Seat> ();
-		seatOrder = 0;
+		seatStack = new List<Seat> ();
 
 		float areaRadius = this.CalculateAreaRadius (areaObject);
 		float areaStep = this.CalculateAreaStep (areaObject, areaDivision);
@@ -46,7 +44,6 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 
 	public void InitializeSeatStack() {
 		seatStack.Clear ();
-		seatOrder = 0;
 	}
 	
 	public void UpdateArea(Vector2 centerPoint, float radius, Team team) {
@@ -63,19 +60,11 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 	}
 
 	public void AddSeat(Seat seat, Team team) {
-		seatOrder++;
-		seatStack.Add (seatOrder, seat);
-
-		Debug.Log ("AddSeat: " + team + ", circleList:" + seat.GetCircleList().Count);
+		seatStack.Add (seat);
 
 		foreach (Circle circle in seat.GetCircleList()) {
-			Debug.Log ("circle: " + circle);
 			UpdateArea(circle.point, circle.radius, team);
 		}
-	}
-
-	public int GetSeatOrder() {
-		return seatOrder;
 	}
 
 	public float CalcurateTeamAreaPercentage(Team targetTeam) {
@@ -85,7 +74,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		foreach (KeyValuePair<Vector2, Team> entry in areaTable) {
 			Team team = (Team)entry.Value;
 			if (targetTeam == team) {
-				Vector2 point = (Vector2)entry.Key;
+				Vector2 point = entry.Key;
 				targetTeamCount++;
 			}
 			totalCount++;
@@ -115,7 +104,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		Vector2? nearPosition = GetNearPlace (position, team);
 		
 		if (nearPosition == null) {
-			Debug.Log ("Not Found Near partner.");
+			Debug.LogWarning ("Not Found Near partner.");
 			return false;
 		}
 
