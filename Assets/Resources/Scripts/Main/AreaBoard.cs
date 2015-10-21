@@ -48,7 +48,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		seatStack.Clear ();
 	}
 	
-	public void UpdateArea(Vector2 centerPoint, float radius, Team team) {
+	public void UpdateGrid(Vector2 centerPoint, float radius, Team team) {
 		List<Vector2> updatePoints = new List<Vector2>();
 		foreach (Vector2 point in areaTable.Keys) {
 			if (Vector2.Distance(centerPoint, point) <= radius) {
@@ -65,7 +65,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		seatStack.Add (seat);
 
 		foreach (Circle circle in seat.GetCircleList()) {
-			UpdateArea(circle.point, circle.radius, team);
+			UpdateGrid(circle.point, circle.radius, team);
 		}
 	}
 
@@ -158,13 +158,15 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		// draw update
 		string path = team.PrefabPath();
 		Vector3 position = new Vector3(painter.position.x, painter.position.y, areaObject.transform.position.z + 10);
-		GameObject circleObj = Resources.Load<GameObject> (path);
-		Bounds bounds = circleObj.GetComponent<SpriteRenderer>().bounds;
-		Debug.Log ("bounds: " + bounds.size.x);
-		Instantiate(circleObj, position, Quaternion.identity);
+		GameObject circleObject = Resources.Load<GameObject> (path);
+		SpriteRenderer circleRenderer = circleObject.GetComponent<SpriteRenderer>();
+		float originalScale = circleRenderer.bounds.size.x / 2;
+		float scale = 1.0f / originalScale;
+		GameObject instanceObject = Instantiate(circleObject, position, Quaternion.identity) as GameObject;
+		instanceObject.transform.localScale = new Vector3(scale, scale, scale);
 
 		// debug
-		DrawDebugGrids();
+		// DrawDebugGrids();
 	}
 
 	private float CalculateAreaRadius(GameObject gameObject) {
