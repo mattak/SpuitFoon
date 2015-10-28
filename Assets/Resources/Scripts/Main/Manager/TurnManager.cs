@@ -5,7 +5,6 @@ using UniRx.Triggers;
 
 public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 	public int totalTurn = 10;
-	public IObservable<int> TurnNumberObservable;
 	private int turn;
 	private TurnStep turnStep;
 
@@ -24,7 +23,6 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 		Debug.Log ("NextTurn: " + turn);
 
 		if (IsFinishTurn()) {
-			Debug.Log ("FIXME: show result");
 			GameManager.Instance.GameOver();
 			return false;
 		}
@@ -66,7 +64,7 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 		PickerManager.Instance.ChangePlayer (team);
 	}
 
-	public void StartCleanupPhase() {
+	public void StartCleanupPhase () {
 		PickerManager.Instance.ChangePlayer (Team.Empty);
 		this.NextTurn ();
 	}
