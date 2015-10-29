@@ -21,7 +21,7 @@ public class PalletPicker : MonoBehaviour {
 			placement[index] = null;
 
 			// mouseDown FIXME: change condition to sprite collision
-			Observable.EveryUpdate ()
+			this.UpdateAsObservable ()
 				.Where (_ => Input.GetMouseButtonDown (0))
 				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
 				.Select (point => Physics2D.OverlapPoint (point))
@@ -38,7 +38,7 @@ public class PalletPicker : MonoBehaviour {
 		}
 
 		// mouse move
-		Observable.EveryUpdate ()
+		this.UpdateAsObservable ()
 				.Where (_ => PickerManager.Instance.CanPutdownPartner())
 				.Where (_ => !Input.GetMouseButtonDown (0) && !Input.GetMouseButtonUp (0) && Input.GetMouseButton (0))
 				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
@@ -48,7 +48,7 @@ public class PalletPicker : MonoBehaviour {
 				});
 
 		// mouseUp
-		Observable.EveryUpdate ()
+		this.UpdateAsObservable ()
 				.Where (_ => Input.GetMouseButtonUp (0))
 				.Where (_ => PickerManager.Instance.CanPutdownPartner())
 				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
