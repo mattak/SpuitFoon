@@ -9,7 +9,7 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 	private TurnStep turnStep;
 
 	public void Start() {
-		StartTurn ();
+		PickerManager.Instance.ChangePlayer (Team.Empty);
 	}
 
 	public void StartTurn() {

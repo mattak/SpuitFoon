@@ -3,28 +3,22 @@ using System.Collections;
 using UniRx;
 using UniRx.Triggers;
 
-public enum GameLayer {
-	Start,
-	Playing,
-	Result,
-};
-
 public class LayerManager : SingletonMonoBehaviourFast<LayerManager> {
 	public GameObject startLayer;
 	public GameObject resultLayer;
 	public GameObject playingLayer;
-	public ReactiveProperty<GameLayer> layer = new ReactiveProperty<GameLayer>(GameLayer.Start);
+	public ReactiveProperty<GamePhase> Layer = new ReactiveProperty<GamePhase>(GamePhase.Start);
 	private ActiveViewModel startLayerModel;
 	private ActiveViewModel resultLayerModel;
 	private ActiveViewModel playingLayerModel;
 
 	// Use this for initialization
 	void Start () {
-		startLayerModel = new ActiveViewModel(layer.Select(type => type == GameLayer.Start));
+		startLayerModel = new ActiveViewModel(Layer.Select(type => type == GamePhase.Start));
 		startLayerModel.Subscribe (startLayer);
-		playingLayerModel = new ActiveViewModel(layer.Select(type => type == GameLayer.Playing));
+		playingLayerModel = new ActiveViewModel(Layer.Select(type => type == GamePhase.Playing));
 		playingLayerModel.Subscribe (playingLayer);
-		resultLayerModel = new ActiveViewModel(layer.Select(type => type == GameLayer.Result));
+		resultLayerModel = new ActiveViewModel(Layer.Select(type => type == GamePhase.Result));
 		resultLayerModel.Subscribe (resultLayer);
 	}
 }
