@@ -17,8 +17,7 @@ public class GameManager : SingletonMonoBehaviourFast<GameManager> {
 	}
 
 	public void GameOver() {
+		ScoreManager.Instance.ApplyResult ();
 		LayerManager.Instance.Layer.SetValueAndForceNotify(GamePhase.Result);
-		float score1 = AreaBoard.Instance.CalcurateTeamAreaPercentage (Team.Player1);
-		float score2 = AreaBoard.Instance.CalcurateTeamAreaPercentage (Team.Player2);
 	}
 }
