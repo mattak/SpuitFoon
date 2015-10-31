@@ -40,6 +40,19 @@ static class PartnerExt {
 		
 		return prefab;
 	}
+
+	public static Painter CreatePainter(this Partner partner, Vector2 position, float radius) {
+		switch(partner) {
+		case Partner.Fudo:
+			return new FudoPainter(position, radius);
+		case Partner.Pyon:
+			return new PyonPainter(position, radius);
+		case Partner.Hasir:
+			return new HasirPainter(position, radius);
+		default:
+			return new FudoPainter(position, radius);
+		}
+	}
 	
 	private static System.Random random = new System.Random ();
 

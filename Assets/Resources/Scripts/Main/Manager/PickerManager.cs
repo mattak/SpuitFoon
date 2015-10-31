@@ -24,17 +24,13 @@ public class PickerManager : SingletonMonoBehaviourFast<PickerManager> {
 	}
 
 	public bool PutdownPartner(Vector2 position) {
-		Debug.Log ("PutdownPartner");
-
 		if (this.targetTeam == Team.Empty || this.selectedPartner == null) {
-			Debug.Log ("empty");
 			return false;
 		}
 
 		Partner partner = (Partner)this.selectedPartner;
 
 		if (AreaBoard.Instance.PutPartner (partner, this.targetTeam, position)) {
-			Debug.Log ("Putted");
 			this.selectedPartner = null;
 			this.selectedPartnerObject = null;
 			return true;

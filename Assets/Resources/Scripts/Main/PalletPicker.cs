@@ -70,13 +70,10 @@ public class PalletPicker : MonoBehaviour {
 
 		for (int i = 0; i < placeHolders.Length; i++) {
 			if (placement[i] == null) {
-				Partner partner = PartnerExt.Random ();
+				// FIXME
+				Partner partner = Partner.Pyon; // PartnerExt.Random ();
 				string path = partner.SpritePath(team);
 				placement[i] = partner;
-
-				// FIXME
-				// Collider image = placeHolders[i].transform.GetChild (0).GetComponent<Collider>();
-				// image.sprite = Resources.Load<Sprite>(path);
 			}
 		}
 	}

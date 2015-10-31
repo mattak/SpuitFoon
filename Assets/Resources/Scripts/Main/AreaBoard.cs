@@ -6,7 +6,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 	private Dictionary<Vector2, Team> areaTable; // Vector2, Team
 	private List<Seat> seatStack; // Seat
 	public int areaDivision = 200;
-	public GameObject areaObject;
+	public Collider2D areaObject;
 	private List<GameObject> debugGrids;
 
 	public void Start() {
@@ -14,8 +14,8 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		seatStack = new List<Seat> ();
 		debugGrids = new List<GameObject>();
 
-		float areaRadius = this.CalculateAreaRadius (areaObject);
-		float areaStep = this.CalculateAreaStep (areaObject, areaDivision);
+		float areaRadius = this.CalculateAreaRadius (areaObject.gameObject);
+		float areaStep = this.CalculateAreaStep (areaObject.gameObject, areaDivision);
 		InitializeArea (areaObject.transform.position, areaRadius, areaStep);
 		InitializeSeatStack ();
 	}
@@ -90,7 +90,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 
 	public Vector2? GetNearPlace(Vector2 position, Team team) {
 		// TODO: const
-		float distanceThreshold = this.CalculateAreaStep (areaObject, areaDivision);
+		float distanceThreshold = this.CalculateAreaStep (areaObject.gameObject, areaDivision);
 
 		foreach (KeyValuePair<Vector2, Team> entry in areaTable) {
 			if (team == entry.Value && Vector2.Distance (position, entry.Key) <= distanceThreshold) {
@@ -109,13 +109,18 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 			return false;
 		}
 
-		Painter painter = new FudoPainter(new Vector2(position.x, position.y), 1.0f);
+		// new FudoPainter(new Vector2(position.x, position.y), 1.0f);
+		Painter painter = partner.CreatePainter(new Vector2(position.x, position.y), 1.0f);
 		DrawCircle (painter, team);
 		
 		// goto next turn
 		TurnManager.Instance.NextTurnStep();
 
 		return true;
+	}
+
+	public Bounds GetBounds() {
+		return this.areaObject.bounds;
 	}
 
 	private void DrawDebugGrids() {
@@ -154,16 +159,10 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		Seat seat = new Seat(team);
 		painter.Paint (seat);
 		this.AddSeat (seat, team);
-		
+
+		// FIXME: draw update bugs
 		// draw update
-		string path = team.PrefabPath();
-		Vector3 position = new Vector3(painter.position.x, painter.position.y, areaObject.transform.position.z + 10);
-		GameObject circleObject = Resources.Load<GameObject> (path);
-		SpriteRenderer circleRenderer = circleObject.GetComponent<SpriteRenderer>();
-		float originalScale = circleRenderer.bounds.size.x / 2;
-		float scale = 1.0f / originalScale;
-		GameObject instanceObject = Instantiate(circleObject, position, Quaternion.identity) as GameObject;
-		instanceObject.transform.localScale = new Vector3(scale, scale, scale);
+		seat.Draw (team, areaObject.transform.position.z + 10); // FIXME: hardcording
 
 		// debug
 		// DrawDebugGrids();

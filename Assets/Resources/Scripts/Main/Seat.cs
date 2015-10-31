@@ -17,4 +17,18 @@ public class Seat {
 	public ArrayList GetCircleList() {
 		return circleList;
 	}
+
+	public void Draw(Team team, float positionZ) {
+		string path = team.PrefabPath();
+
+		foreach (Circle circle in circleList) {
+			Vector3 position = new Vector3(circle.point.x, circle.point.y, positionZ);
+			GameObject circleObject = Resources.Load<GameObject> (path);
+			SpriteRenderer circleRenderer = circleObject.GetComponent<SpriteRenderer>();
+			float originalScale = circleRenderer.bounds.size.x / 2;
+			float scale = 1.0f / originalScale;
+			GameObject instanceObject = GameObject.Instantiate(circleObject, position, Quaternion.identity) as GameObject;
+			instanceObject.transform.localScale = new Vector3(scale, scale, scale);
+		}
+	}
 }
