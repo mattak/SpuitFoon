@@ -165,7 +165,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		seat.Draw (team, areaObject.transform.position.z + 10); // FIXME: hardcording
 
 		// debug
-		// DrawDebugGrids();
+		DrawDebugGrids();
 	}
 
 	private float CalculateAreaRadius(GameObject gameObject) {

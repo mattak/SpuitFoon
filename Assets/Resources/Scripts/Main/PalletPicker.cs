@@ -71,7 +71,7 @@ public class PalletPicker : MonoBehaviour {
 		for (int i = 0; i < placeHolders.Length; i++) {
 			if (placement[i] == null) {
 				// FIXME
-				Partner partner = Partner.Pyon; // PartnerExt.Random ();
+				Partner partner = Partner.Hasir; // PartnerExt.Random ();
 				string path = partner.SpritePath(team);
 				placement[i] = partner;
 			}

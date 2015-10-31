@@ -10,7 +10,6 @@ public class PyonPainter: Painter {
 	}
 
 	public override void Paint(Seat seat) {
-		// seat.AddCircle (new Circle(position, radius));
 		Bounds bounds = AreaBoard.Instance.GetBounds ();
 
 		System.Random random = new System.Random();
@@ -20,7 +19,6 @@ public class PyonPainter: Painter {
 		float ny = py - bounds.center.y - bounds.size.y/2;
 
 		Vector2 newPosition = new Vector2(nx, ny);
-		Debug.Log("position:"+newPosition);
 		seat.AddCircle (new Circle(newPosition, radius));
 	}
 }
