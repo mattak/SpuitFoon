@@ -70,7 +70,7 @@ public class TurnManager : SingletonMonoBehaviourFast<TurnManager> {
 	}
 
 	public int GetRestTurn() {
-		return totalTurn - turn;
+		return totalTurn - turn + 1;
 	}
 
 	public int GetCurrentTurn() {
