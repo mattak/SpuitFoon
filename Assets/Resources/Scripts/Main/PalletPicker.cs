@@ -11,10 +11,12 @@ public class PalletPicker : MonoBehaviour {
 	public Collider2D[] placeHolders;
 	public GameObject stageObject;
 	private Partner?[] placement;
+	private GameObject[] placementObject;
 
 	// Use this for initialization
 	void Start () {
 		placement = new Partner?[placeHolders.Length];
+		placementObject = new GameObject[placeHolders.Length];
 
 		for (int i = 0; i < placeHolders.Length; i++) {
 			int index = i;
@@ -32,7 +34,12 @@ public class PalletPicker : MonoBehaviour {
 				.Select (p => new Vector3(p.x, p.y, stageObject.transform.position.z - 1))
 				.Subscribe(position => {
 						Partner partner = (Partner)placement[index];
-						PickerManager.Instance.PickupPartner (partner, team, position);
+						GameObject partnerObject = (GameObject)placementObject[index];
+						partnerObject.transform.parent = null;
+						PickerManager.Instance.PickupPartner (partner, partnerObject, team, position);
+
+						placement[index] = null;
+						placementObject[index] = null;
 				});
 		}
 
@@ -54,7 +61,7 @@ public class PalletPicker : MonoBehaviour {
 				.Select (p => new Vector3(p.x, p.y, stageObject.transform.position.z - 1)) // TODO: summerize
 				.Subscribe(position => {
 					if (PickerManager.Instance.PutdownPartner (new Vector2(position.x, position.y))) {
-						// Put down.
+						UpdatePicker ();
 					}
 					else {
 						// place back original position.
@@ -69,11 +76,12 @@ public class PalletPicker : MonoBehaviour {
 
 		for (int i = 0; i < placeHolders.Length; i++) {
 			if (placement[i] == null) {
-				// FIXME
 				Partner partner = PartnerExt.Random ();
-				Debug.Log("partner: " + partner);
 				string path = partner.SpritePath(team);
+				Vector3 position = this.placeHolders[i].transform.position + new Vector3(0,0,-1);
 				placement[i] = partner;
+				placementObject[i] = (GameObject)Instantiate(partner.LoadPartner (team), position, Quaternion.identity);
+				placementObject[i].transform.parent = placeHolders[i].transform;
 			}
 		}
 	}

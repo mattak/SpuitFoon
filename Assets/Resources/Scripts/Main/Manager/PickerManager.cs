@@ -16,10 +16,10 @@ public class PickerManager : SingletonMonoBehaviourFast<PickerManager> {
 		ChangePlayer (Team.Empty);
 	}
 
-	public void PickupPartner(Partner partner, Team team, Vector3 position) {
+	public void PickupPartner(Partner partner, GameObject partnerObject, Team team, Vector3 position) {
 		Debug.Assert (team == targetTeam);
 		this.selectedPartner = partner;
-		this.selectedPartnerObject = (GameObject)Instantiate(partner.LoadPartner (team), position, Quaternion.identity);
+		this.selectedPartnerObject = partnerObject; // (GameObject)Instantiate(partner.LoadPartner (team), position, Quaternion.identity);
 		this.selectedPartnerObject.transform.position = position;
 	}
 
