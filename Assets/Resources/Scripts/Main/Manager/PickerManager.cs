@@ -30,7 +30,7 @@ public class PickerManager : SingletonMonoBehaviourFast<PickerManager> {
 
 		Partner partner = (Partner)this.selectedPartner;
 
-		if (AreaBoard.Instance.PutPartner (partner, this.targetTeam, position)) {
+		if (AreaBoardManager.Instance.PutPartner (partner, this.targetTeam, position)) {
 			this.selectedPartner = null;
 			this.selectedPartnerObject = null;
 			return true;

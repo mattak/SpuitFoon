@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
+public class AreaBoardManager: SingletonMonoBehaviourFast<AreaBoardManager> {
 	private Dictionary<Vector2, Team> areaTable; // Vector2, Team
 	private List<Seat> seatStack; // Seat
 	public int areaDivision = 200;

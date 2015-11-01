@@ -10,7 +10,7 @@ public class PyonPainter: Painter {
 	}
 
 	public override void Paint(Seat seat) {
-		Bounds bounds = AreaBoard.Instance.GetBounds ();
+		Bounds bounds = AreaBoardManager.Instance.GetBounds ();
 
 		System.Random random = new System.Random();
 		float px = (float)random.NextDouble () * bounds.size.x;
