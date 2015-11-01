@@ -109,7 +109,6 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 			return false;
 		}
 
-		// new FudoPainter(new Vector2(position.x, position.y), 1.0f);
 		Painter painter = partner.CreatePainter(new Vector2(position.x, position.y), 1.0f);
 		DrawCircle (painter, team);
 		
@@ -165,7 +164,7 @@ public class AreaBoard : SingletonMonoBehaviourFast<AreaBoard> {
 		seat.Draw (team, areaObject.transform.position.z + 10); // FIXME: hardcording
 
 		// debug
-		DrawDebugGrids();
+		// DrawDebugGrids();
 	}
 
 	private float CalculateAreaRadius(GameObject gameObject) {

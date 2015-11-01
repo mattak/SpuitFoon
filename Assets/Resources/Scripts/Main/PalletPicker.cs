@@ -31,7 +31,6 @@ public class PalletPicker : MonoBehaviour {
 				.Select (_ => Camera.main.ScreenToWorldPoint (Input.mousePosition))
 				.Select (p => new Vector3(p.x, p.y, stageObject.transform.position.z - 1))
 				.Subscribe(position => {
-						Debug.Log ("pickup");
 						Partner partner = (Partner)placement[index];
 						PickerManager.Instance.PickupPartner (partner, team, position);
 				});
@@ -71,7 +70,8 @@ public class PalletPicker : MonoBehaviour {
 		for (int i = 0; i < placeHolders.Length; i++) {
 			if (placement[i] == null) {
 				// FIXME
-				Partner partner = Partner.Hasir; // PartnerExt.Random ();
+				Partner partner = PartnerExt.Random ();
+				Debug.Log("partner: " + partner);
 				string path = partner.SpritePath(team);
 				placement[i] = partner;
 			}
